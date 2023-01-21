@@ -1,0 +1,11 @@
+{
+  "name": "eagle-and-tails",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "tomuraCreator <vladislavutkin92@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "yargs": "^17.6.2"
+  }
+}
