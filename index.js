@@ -33,7 +33,11 @@ const line = yargs(hideBin(process.argv))
                 const safeResolve = safeApply(resolvePath, path);
                 path_to_log = safeResolve();
                 asyncGetData(path_to_log, JSON.parse).then((data) => {
-                    console.log(Analizer.compute(data.games))
+                    const {total, winCount} = Analizer.compute(data.games);
+
+                    console.log(`Всего игр ${total}`)
+                    console.log(`Всего побед ${winCount} и поражений ${total - winCount}`)
+                    console.log(`Процент побед ${(winCount / total * 100).toFixed(1)}`)
                 })
             }
         }
@@ -43,8 +47,8 @@ const line = yargs(hideBin(process.argv))
         aliases: ["c"],
         handler: ({path}) => {
             if(path) {
-                if(!fs.existsSync(path)) return;
-                asyncWriteData(path + ".log.json", {games: []}, (data) => JSON.stringify(data, null, 2))
+                if(fs.existsSync(path)) return;
+                asyncWriteData(path, {games: []}, (data) => JSON.stringify(data, null, 2))
                     .catch((err) => console.log(err.message))
             }
         }
@@ -70,7 +74,7 @@ function readAndWriteLog(path, score) {
 async function game() {
     const rl = readline.createInterface({input, output});
 
-    const rnm = Math.random() < .5 ? 1 : 2;
+    const rnm = Math.random() <= .5 ? 1 : 2;
     let answer = "";
     console.log('Я загадал число, отгадай его: 1 или 2');
     answer = await rl.question('Введи число:\n');
@@ -89,5 +93,4 @@ async function game() {
         console.log("Не отгадал!");
         return new Score(rnm, d, false)
     }
-
 }
